@@ -124,3 +124,30 @@ class TestAccountService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
     # ADD YOUR TEST CASES HERE ...
+    def test_list_accounts(self):
+        response = self.client.get("/accounts")
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(response.json, list)
+
+    def test_read_account(self):
+        response = self.client.get("/accounts/1")  # Assuming ID 1 exists
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("id", response.json)
+
+        response = self.client.get("/accounts/9999")  # Assuming ID 9999 does not exist
+        self.assertEqual(response.status_code, 404)
+
+    def test_update_account(self):
+        response = self.client.put("/accounts/1", json={"name": "New Name"})  # Assuming ID 1 exists
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json["name"], "New Name")
+
+        response = self.client.put("/accounts/9999", json={"name": "New Name"})  # Assuming ID 9999 does not exist
+        self.assertEqual(response.status_code, 404)
+
+    def test_delete_account(self):
+        response = self.client.delete("/accounts/1")  # Assuming ID 1 exists
+        self.assertEqual(response.status_code, 204)
+
+        response = self.client.delete("/accounts/9999")  # Assuming ID 9999 does not exist
+        self.assertEqual(response.status_code, 204)

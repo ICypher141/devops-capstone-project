@@ -12,7 +12,7 @@ from tests.factories import AccountFactory
 from service.common import status  # HTTP Status Codes
 from service.models import db, Account, init_db
 from service.routes import app
-from service import talisman , CORS
+from service import talisman ,CORS
 
 HTTPS_ENVIRON = {"wsgi.url_scheme": "https"}
 
@@ -144,7 +144,7 @@ class TestAccountService(TestCase):
         # Test for a non-existent account ID
         response = self.client.get(f"{BASE_URL}/9999")  # Assuming ID 9999 does not exist
         self.assertEqual(response.status_code, 404)
-    
+
     def test_update_account(self):
         """It should Update an existing Account"""
         account = self._create_accounts(1)[0]  # Create an account to update
@@ -176,5 +176,4 @@ class TestAccountService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("Access-Control-Allow-Origin", response.headers)
         self.assertEqual(response.headers["Access-Control-Allow-Origin"], "*")
-
 

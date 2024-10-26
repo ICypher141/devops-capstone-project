@@ -61,6 +61,7 @@ def create_accounts():
 # LIST ALL ACCOUNTS
 ######################################################################
 
+
 # ... place you code here to LIST accounts ...
 @app.route("/accounts", methods=["GET"])
 def list_accounts():
@@ -90,7 +91,7 @@ def read_account(account_id):
 def update_account(account_id):
     account = Account.find(account_id)
     if not account:
-        return jsonify({"error": "Account not found"}), 404
+        return jsonify({"error": "Account not found"}),404
     
     account.deserialize(request.get_json())
     account.update()

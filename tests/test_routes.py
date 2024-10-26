@@ -12,7 +12,9 @@ from tests.factories import AccountFactory
 from service.common import status  # HTTP Status Codes
 from service.models import db, Account, init_db
 from service.routes import app
-from service import talisman
+from service import talisman , CORS
+
+HTTPS_ENVIRON = {"wsgi.url_scheme": "https"}
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/postgres"
@@ -158,8 +160,6 @@ class TestAccountService(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json["name"], "New Name")
 
-
-
     def test_delete_account(self):
         """It should Delete an Account by ID"""
         account = self._create_accounts(1)[0]
@@ -169,5 +169,12 @@ class TestAccountService(TestCase):
         # Test for a non-existent account ID
         response = self.client.delete(f"{BASE_URL}/9999")  # Assuming ID 9999 does not exist
         self.assertEqual(response.status_code, 204)
+
+    def test_cors_headers(self):
+        """It should have CORS headers on the root URL"""
+        response = self.client.get("/", environ_overrides=HTTPS_ENVIRON)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("Access-Control-Allow-Origin", response.headers)
+        self.assertEqual(response.headers["Access-Control-Allow-Origin"], "*")
 
 
